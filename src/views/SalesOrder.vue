@@ -57,7 +57,7 @@ import BaseCard from 'uiApp/Card'
 import BaseBadge from 'uiApp/Badge'
 import BaseInput from 'uiApp/Input'
 import { formatRupiah, formatDate } from 'uiApp/utils'
-import { authStore } from 'uiApp/auth'
+import { authStore } from 'hostApp/auth'
 
 interface OrderItem {
   id: number
