@@ -15,11 +15,14 @@
 
       <!-- Auth Banner Notification inside Remote Module -->
       <div v-if="authStore.isLoggedIn" class="auth-banner active">
-        <span>🍍 Pinia Auth: <strong>{{ authStore.user?.name }}</strong> ({{ authStore.user?.role }})</span>
-        <BaseBadge variant="success" dot size="sm">Pinia Sync Active</BaseBadge>
+        <div>
+          <span>🔐 OIDC SSO User: <strong>{{ authStore.user?.name }}</strong> ({{ authStore.user?.role }})</span>
+          <div class="sub-text">Subject ID: <code>{{ authStore.user?.subject }}</code> • Issuer: <code>{{ authStore.user?.issuer }}</code></div>
+        </div>
+        <BaseBadge variant="success" dot size="sm">JWT Token Injected</BaseBadge>
       </div>
       <div v-else class="auth-banner inactive">
-        <span>🔒 Anda belum login. Silakan login di HOST Shell untuk mengaktifkan tombol pesanan.</span>
+        <span>🔒 Sesi SSO belum aktif. Silakan login via Keycloak di HOST untuk mengaktifkan fitur sales.</span>
         <BaseBadge variant="warning" size="sm">Read Only Mode</BaseBadge>
       </div>
 
@@ -140,6 +143,12 @@ function createOrder() {
   background: #fef3c7;
   border: 1px solid #fde68a;
   color: #92400e;
+}
+
+.sub-text {
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+  color: #4338ca;
 }
 
 .search-bar {

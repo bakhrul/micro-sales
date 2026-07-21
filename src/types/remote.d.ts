@@ -2,16 +2,23 @@ declare module 'hostApp/auth' {
   export interface UserProfile {
     name: string
     email: string
-    role: 'Admin' | 'Sales Manager' | 'Inventory Specialist' | 'Guest'
+    username: string
+    role: string
+    roles: string[]
     avatar: string
+    issuer: string
+    subject: string
   }
   export interface AuthStoreState {
+    tokens: any | null
     user: UserProfile | null
-    token: string | null
     isLoggedIn: boolean
+    accessToken: string | null
+    bearerHeader: string
     currentUser: UserProfile | null
-    login: (email: string, role?: UserProfile['role']) => void
-    logout: () => void
+    userRoles: string[]
+    loginWithSSO: (roleChoice?: string) => void
+    logoutSSO: () => void
   }
   export function useAuthStore(): AuthStoreState
 }
