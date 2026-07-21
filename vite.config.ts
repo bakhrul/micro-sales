@@ -17,14 +17,10 @@ export default defineConfig(({ mode }) => {
         },
         remotes: {
           uiApp: {
-            external: `new Promise(resolve => {
+            external: `new Promise((resolve, reject) => {
               const override = window.localStorage.getItem('override_uiApp');
               const url = override || '${uiDefault}';
-              const script = document.createElement('script');
-              script.src = url;
-              script.onload = () => resolve(window.uiApp);
-              script.onerror = () => resolve(window.uiApp);
-              document.head.appendChild(script);
+              import(/* @vite-ignore */ url).then(resolve).catch(reject);
             })`,
             externalType: 'promise'
           }
