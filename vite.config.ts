@@ -15,8 +15,8 @@ export default defineConfig(({ mode }) => {
           './routes': './src/router/index.ts',
         },
         remotes: {
-          hostApp: env.VITE_HOST_APP_URL || 'http://localhost:5000/assets/remoteEntry.js',
-          uiApp: env.VITE_UI_APP_URL || 'http://localhost:5003/assets/remoteEntry.js'
+          hostApp: env.VITE_HOST_APP_URL || 'https://learning-micro-container.netlify.app/assets/remoteEntry.js',
+          uiApp: env.VITE_UI_APP_URL || 'https://leraning-micro-ui.netlify.app/assets/remoteEntry.js'
         },
         shared: ['vue', 'vue-router']
       })
