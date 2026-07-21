@@ -6,7 +6,7 @@
           variant="success"
           icon="🛒"
           size="sm"
-          :disabled="!authStore.isLoggedIn.value"
+          :disabled="!authStore.isLoggedIn"
           @click="createOrder"
         >
           Buat Pesanan Baru
@@ -14,9 +14,9 @@
       </template>
 
       <!-- Auth Banner Notification inside Remote Module -->
-      <div v-if="authStore.isLoggedIn.value" class="auth-banner active">
-        <span>👤 Logged in as: <strong>{{ authStore.user.value?.name }}</strong> ({{ authStore.user.value?.role }})</span>
-        <BaseBadge variant="success" dot size="sm">Auth Sync Connected</BaseBadge>
+      <div v-if="authStore.isLoggedIn" class="auth-banner active">
+        <span>🍍 Pinia Auth: <strong>{{ authStore.user?.name }}</strong> ({{ authStore.user?.role }})</span>
+        <BaseBadge variant="success" dot size="sm">Pinia Sync Active</BaseBadge>
       </div>
       <div v-else class="auth-banner inactive">
         <span>🔒 Anda belum login. Silakan login di HOST Shell untuk mengaktifkan tombol pesanan.</span>
@@ -57,7 +57,9 @@ import BaseCard from 'uiApp/Card'
 import BaseBadge from 'uiApp/Badge'
 import BaseInput from 'uiApp/Input'
 import { formatRupiah, formatDate } from 'uiApp/utils'
-import { authStore } from 'hostApp/auth'
+import { useAuthStore } from 'hostApp/auth'
+
+const authStore = useAuthStore()
 
 interface OrderItem {
   id: number
@@ -95,10 +97,10 @@ function getStatusVariant(status: OrderItem['status']) {
 }
 
 function createOrder() {
-  if (!authStore.isLoggedIn.value) return
+  if (!authStore.isLoggedIn) return
   
   const nextId = orders.value.length + 1
-  const creator = authStore.user.value?.name || 'User'
+  const creator = authStore.user?.name || 'User'
   
   orders.value.unshift({
     id: nextId,

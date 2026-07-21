@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
           hostApp: env.VITE_HOST_APP_URL || 'https://learning-micro-container.netlify.app/assets/remoteEntry.js',
           uiApp: env.VITE_UI_APP_URL || 'https://leraning-micro-ui.netlify.app/assets/remoteEntry.js'
         },
-        shared: ['vue', 'vue-router']
+        shared: ['vue', 'vue-router', 'pinia']
       })
     ],
     server: {

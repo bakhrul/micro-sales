@@ -1,18 +1,19 @@
 declare module 'hostApp/auth' {
-  import { ComputedRef } from 'vue'
   export interface UserProfile {
     name: string
     email: string
     role: 'Admin' | 'Sales Manager' | 'Inventory Specialist' | 'Guest'
     avatar: string
   }
-  export const authStore: {
-    user: ComputedRef<UserProfile | null>
-    token: ComputedRef<string | null>
-    isLoggedIn: ComputedRef<boolean>
+  export interface AuthStoreState {
+    user: UserProfile | null
+    token: string | null
+    isLoggedIn: boolean
+    currentUser: UserProfile | null
     login: (email: string, role?: UserProfile['role']) => void
     logout: () => void
   }
+  export function useAuthStore(): AuthStoreState
 }
 
 declare module 'uiApp/Button' {
