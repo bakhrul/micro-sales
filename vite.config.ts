@@ -4,6 +4,7 @@ import federation from '@originjs/vite-plugin-federation'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+  const uiDefault = env.VITE_UI_APP_URL || 'http://localhost:5003/assets/remoteEntry.js'
 
   return {
     plugins: [
@@ -15,7 +16,18 @@ export default defineConfig(({ mode }) => {
           './routes': './src/router/index.ts',
         },
         remotes: {
-          uiApp: env.VITE_UI_APP_URL || 'http://localhost:5003/assets/remoteEntry.js'
+          uiApp: {
+            external: `new Promise(resolve => {
+              const override = window.localStorage.getItem('override_uiApp');
+              const url = override || '${uiDefault}';
+              const script = document.createElement('script');
+              script.src = url;
+              script.onload = () => resolve(window.uiApp);
+              script.onerror = () => resolve(window.uiApp);
+              document.head.appendChild(script);
+            })`,
+            externalType: 'promise'
+          }
         },
         shared: ['vue', 'vue-router']
       })

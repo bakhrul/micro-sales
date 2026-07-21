@@ -3,7 +3,7 @@
     <BaseCard title="Transaksi Sales Order" subtitle="Daftar pesanan penjualan (Remote Module 2)">
       <template #actions>
         <BaseButton variant="success" icon="🛒" size="sm" @click="createOrder">
-          Buat Pesanan Baru
+          Buat Pesanan Barus
         </BaseButton>
       </template>
 
