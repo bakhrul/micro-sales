@@ -2,10 +2,26 @@
   <div class="view-page">
     <BaseCard title="Transaksi Sales Order" subtitle="Daftar pesanan penjualan (Remote Module 2)">
       <template #actions>
-        <BaseButton variant="success" icon="🛒" size="sm" @click="createOrder">
-          Buat Pesanan Barunfnfn
+        <BaseButton
+          variant="success"
+          icon="🛒"
+          size="sm"
+          :disabled="!authStore.isLoggedIn.value"
+          @click="createOrder"
+        >
+          Buat Pesanan Baru
         </BaseButton>
       </template>
+
+      <!-- Auth Banner Notification inside Remote Module -->
+      <div v-if="authStore.isLoggedIn.value" class="auth-banner active">
+        <span>👤 Logged in as: <strong>{{ authStore.user.value?.name }}</strong> ({{ authStore.user.value?.role }})</span>
+        <BaseBadge variant="success" dot size="sm">Auth Sync Connected</BaseBadge>
+      </div>
+      <div v-else class="auth-banner inactive">
+        <span>🔒 Anda belum login. Silakan login di HOST Shell untuk mengaktifkan tombol pesanan.</span>
+        <BaseBadge variant="warning" size="sm">Read Only Mode</BaseBadge>
+      </div>
 
       <div class="search-bar">
         <BaseInput
@@ -19,7 +35,7 @@
         <div v-for="order in filteredOrders" :key="order.id" class="order-card">
           <div class="order-main">
             <div class="order-number">{{ order.orderNo }}</div>
-            <div class="order-customer">Pelanggan: {{ order.customer }}</div>
+            <div class="order-customer">Pelanggan: {{ order.customer }} • Dibuat oleh: <strong>{{ order.createdBy }}</strong></div>
             <div class="order-date">{{ formatDate(order.date) }}</div>
           </div>
           <div class="order-right">
@@ -41,11 +57,13 @@ import BaseCard from 'uiApp/Card'
 import BaseBadge from 'uiApp/Badge'
 import BaseInput from 'uiApp/Input'
 import { formatRupiah, formatDate } from 'uiApp/utils'
+import { authStore } from 'uiApp/auth'
 
 interface OrderItem {
   id: number
   orderNo: string
   customer: string
+  createdBy: string
   date: string
   amount: number
   status: 'Diproses' | 'Dikirim' | 'Selesai' | 'Dibatalkan'
@@ -53,9 +71,9 @@ interface OrderItem {
 
 const search = ref('')
 const orders = ref<OrderItem[]>([
-  { id: 1, orderNo: 'SO-2026-001', customer: 'PT Digital Indonesia', date: '2026-07-21', amount: 14500000, status: 'Selesai' },
-  { id: 2, orderNo: 'SO-2026-002', customer: 'CV Maju Mundur', date: '2026-07-20', amount: 8250000, status: 'Dikirim' },
-  { id: 3, orderNo: 'SO-2026-003', customer: 'Toko Teknologi', date: '2026-07-20', amount: 3100000, status: 'Diproses' }
+  { id: 1, orderNo: 'SO-2026-001', customer: 'PT Digital Indonesia', createdBy: 'Bahrul Developer', date: '2026-07-21', amount: 14500000, status: 'Selesai' },
+  { id: 2, orderNo: 'SO-2026-002', customer: 'CV Maju Mundur', createdBy: 'Sales Staff', date: '2026-07-20', amount: 8250000, status: 'Dikirim' },
+  { id: 3, orderNo: 'SO-2026-003', customer: 'Toko Teknologi', createdBy: 'Sales Staff', date: '2026-07-20', amount: 3100000, status: 'Diproses' }
 ])
 
 const filteredOrders = computed(() => {
@@ -77,11 +95,16 @@ function getStatusVariant(status: OrderItem['status']) {
 }
 
 function createOrder() {
+  if (!authStore.isLoggedIn.value) return
+  
   const nextId = orders.value.length + 1
+  const creator = authStore.user.value?.name || 'User'
+  
   orders.value.unshift({
     id: nextId,
     orderNo: `SO-2026-00${nextId}`,
     customer: 'Klien Express Baru',
+    createdBy: creator,
     date: '2026-07-21',
     amount: 5000000,
     status: 'Diproses'
@@ -93,6 +116,28 @@ function createOrder() {
 .view-page {
   display: flex;
   flex-direction: column;
+}
+
+.auth-banner {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.auth-banner.active {
+  background: #e0e7ff;
+  border: 1px solid #c7d2fe;
+  color: #3730a3;
+}
+
+.auth-banner.inactive {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
 }
 
 .search-bar {
